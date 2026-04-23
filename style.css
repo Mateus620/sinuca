@@ -1,0 +1,208 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: #fff;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Container principal */
+.container {
+    background: #111827;
+    padding: 30px;
+    border-radius: 20px;
+    width: 95%;
+    max-width: 420px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    text-align: center;
+}
+
+/* Títulos */
+h1 {
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+h2 {
+    margin-bottom: 15px;
+}
+
+h3 {
+    margin: 15px 0 10px;
+    color: #9ca3af;
+}
+
+/* Botões */
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #1d4ed8;
+    transform: scale(1.02);
+}
+
+/* Botão vermelho */
+button.danger {
+    background: #dc2626;
+}
+
+button.danger:hover {
+    background: #b91c1c;
+}
+
+/* Inputs */
+input {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+}
+
+/* Lista de jogadores */
+ul {
+    list-style: none;
+    margin-top: 15px;
+}
+
+li {
+    background: #1f2937;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Partida atual */
+#conteudoTabela div {
+    background: #1f2937;
+    padding: 12px;
+    border-radius: 12px;
+    margin-top: 10px;
+}
+
+/* Ranking */
+#conteudoTabela p {
+    background: #374151;
+    padding: 8px;
+    border-radius: 8px;
+    margin-top: 5px;
+}
+
+/* Destaque campeão ranking */
+#conteudoTabela p:first-child {
+    background: #16a34a;
+}
+
+/* Login box */
+#loginBox {
+    margin-top: 20px;
+    padding: 15px;
+    background: #1f2937;
+    border-radius: 15px;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Animação */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+li button {
+    width: auto;
+    padding: 5px 8px;
+    font-size: 12px;
+    background: #dc2626;
+}
+
+li button:hover {
+    background: #b91c1c;
+}
+
+.status-box {
+    margin: 15px 0;
+    padding: 12px 20px;
+    border-radius: 12px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+
+    background: linear-gradient(135deg, #1e293b, #334155);
+    color: #e2e8f0;
+
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 12px 18px;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: 0.3s;
+    z-index: 9999;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.toast.info { background: #3b82f6; }
+.toast.success { background: #16a34a; }
+.toast.warning { background: #f59e0b; color: black; }
+.toast.error { background: #dc2626; }
+
+
+.partida-destaque {
+    background: linear-gradient(135deg, #1e293b, #334155);
+    padding: 16px;
+    border-radius: 12px;
+    margin: 15px 0;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+
+    border: 2px solid #3b82f6;
+    box-shadow: 0 0 15px rgba(59,130,246,0.4);
+
+    transition: 0.3s;
+}
+
+.partida-destaque:hover {
+    transform: scale(1.02);
+}

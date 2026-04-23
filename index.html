@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Controle de Sinuca</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>🎱 Controle de Torneio de Sinuca</h1>
+
+    <!-- Tela inicial -->
+    <div id="inicio">
+
+        <button onclick="verTabela()">Ver Tabela</button>
+        <button onclick="mostrarLogin()">Login ADM</button>
+
+        <!-- 🔥 Login bonito -->
+        <div id="loginBox" style="display:none; margin-top:15px;">
+            <input type="email" id="email" placeholder="Email">
+            <input type="password" id="senha" placeholder="Senha">
+            <br>
+            <button onclick="fazerLogin()">Entrar</button>
+        </div>
+
+    </div>
+
+    <!-- Área ADM -->
+    <div id="adm" style="display: none;">
+        <h2>Painel do ADM</h2>
+
+        <input type="text" id="nomeJogador" placeholder="Nome do jogador">
+        <button onclick="adicionarJogador()">Adicionar</button>
+
+        <ul id="listaJogadores"></ul>
+
+        <button onclick="iniciarTorneio()">Iniciar Torneio</button>
+        <button onclick="resetarTorneio()">Resetar Torneio</button>
+
+        <button onclick="logout()">Sair</button>
+        <div id="tabelaADM"></div>
+    </div>
+
+    <!-- Tabela -->
+    <div id="tabela" style="display: none;">
+        <h2>Tabela</h2>
+        <div id="conteudoTabela"></div>
+
+        <button onclick="location.reload()">Voltar</button>
+    </div>
+
+</div>
+
+<script type="module" src="script.js"></script>
+
+</body>
+</html>
