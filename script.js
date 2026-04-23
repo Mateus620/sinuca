@@ -193,6 +193,8 @@ function mostrarTabela() {
     let tituloPartidas = document.createElement("h3");
     tituloPartidas.textContent = faseAtual === "final"
         ? "🏆 Partida da Final"
+        : faseAtual === "desempate"
+        ? "⚖ Partida de Desempate"
         : "Partida Atual";
     div.appendChild(tituloPartidas);
 
@@ -346,7 +348,7 @@ async function gerarFinal() {
                 });
             }
         }
-    
+        await updateDoc(doc(db, "config", "estado"), {fase: "desempate"});
         return; // 🔥 NÃO entra na final ainda
     }
 
@@ -470,7 +472,25 @@ async function verificarFinal() {
             vitorias[p.vencedor] = (vitorias[p.vencedor] || 0) + 1;
         });
     
-        let vencedor = Object.keys(vitorias).sort((a, b) => vitorias[b] - vitorias[a])[0];
+        let rankingDesempate = Object.entries(vitorias)
+            .sort((a, b) => b[1] - a[1]);
+
+        if (rankingDesempate.length > 1 && rankingDesempate[0][1] === rankingDesempate[1][1]) {
+
+            await addDoc(collection(db, "partidas"), {
+                jogador1: rankingDesempate[0][0],
+                jogador2: rankingDesempate[1][0],
+                status: "pendente",
+                fase: "desempate",
+                ordem: 3000
+            });
+
+            return;
+        }
+
+        if (rankingDesempate.length === 0) return;
+
+        let vencedor = rankingDesempate[0][0];
     
         let ranking = [...jogadores].sort((a, b) => b.pontos - a.pontos);
         let primeiro = ranking[0];
@@ -629,7 +649,7 @@ async function fazerLogin() {
 }
 
 function obterStatus() {
-
+    if (faseAtual === "desempate") return "Desempate";
     if (jogadores.length > 0 && partidas.length === 0) return "Montando jogadores";
     if (partidas.length === 0) return "Não iniciado";
     if (faseAtual === "grupos") return "Fase de Grupos";
@@ -644,7 +664,7 @@ async function criarDesempate(j1, j2) {
         jogador1: j1,
         jogador2: j2,
         status: "pendente",
-        fase: "final",
+        fase: "desempate",
         ordem: 2000
     });
 }
