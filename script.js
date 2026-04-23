@@ -309,8 +309,46 @@ async function gerarFinal() {
 
     let ranking = [...jogadores].sort((a, b) => b.pontos - a.pontos);
 
-    let finalistas = [ranking[0], ranking[1]];
-    let eliminados = ranking.slice(2);
+    let primeiro = ranking[0];
+
+    // 🔥 pega todos que estão empatados com o 2º lugar
+    let segundoLugarPontos = ranking[1].pontos;
+    
+    let candidatos = ranking.filter(j => j.pontos === segundoLugarPontos && j.nome !== primeiro.nome);
+    
+    // 🔥 inclui também o 1º automaticamente
+    let finalistas;
+    
+    if (candidatos.length > 1) {
+        // empate → mata-mata entre eles
+        finalistas = [primeiro, ...candidatos];
+    } else {
+        finalistas = [primeiro, ranking[1]];
+    }
+    
+    let eliminados = ranking.filter(j => !finalistas.includes(j));
+
+    if (finalistas.length > 2) {
+
+        mostrarToast("⚖ Desempate para definir finalista!", "warning");
+    
+        let ordem = 900;
+    
+        for (let i = 1; i < finalistas.length; i++) {
+            for (let j = i + 1; j < finalistas.length; j++) {
+    
+                await addDoc(collection(db, "partidas"), {
+                    jogador1: finalistas[i].nome,
+                    jogador2: finalistas[j].nome,
+                    status: "pendente",
+                    fase: "desempate",
+                    ordem: ordem++
+                });
+            }
+        }
+    
+        return; // 🔥 NÃO entra na final ainda
+    }
 
     mostrarToast("🏆 Final iniciada!", "warning");
 
@@ -355,7 +393,7 @@ async function vitoria(index, vencedor) {
     });
 
     // ❗ SÓ soma pontos se NÃO for final
-    if (partida.fase !== "final") {
+    if (partida.fase === undefined) {
         let jogador = jogadores.find(j => j.nome === nomeVencedor);
 
         if (jogador) {
@@ -407,7 +445,7 @@ onSnapshot(collection(db, "jogadores"), (snapshot) => {
     mostrarTabela();
 });
 
-function verificarFinal() {
+async function verificarFinal() {
 
     if (faseAtual === "final") return;
 
@@ -415,7 +453,53 @@ function verificarFinal() {
 
     let pendente = partidas.some(p => p.status === "pendente");
 
-    if (!pendente) {
+    let desempates = partidas.filter(p => p.fase === "desempate");
+
+    let desempatesPendentes = desempates.some(p => p.status === "pendente");
+    
+    if (desempates.length > 0 && !desempatesPendentes) {
+
+        let jaTemFinal = partidas.some(p => p.fase === "final");
+        if (jaTemFinal) return;
+        
+        // 🔥 calcula vencedor do desempate
+        let vitorias = {};
+    
+        desempates.forEach(p => {
+            if (!p.vencedor) return;
+            vitorias[p.vencedor] = (vitorias[p.vencedor] || 0) + 1;
+        });
+    
+        let vencedor = Object.keys(vitorias).sort((a, b) => vitorias[b] - vitorias[a])[0];
+    
+        let ranking = [...jogadores].sort((a, b) => b.pontos - a.pontos);
+        let primeiro = ranking[0];
+    
+        // 🔥 agora sim gera final correta
+        await addDoc(collection(db, "partidas"), {
+            jogador1: primeiro.nome,
+            jogador2: vencedor,
+            status: "pendente",
+            fase: "final",
+            ordem: 999
+        });
+    
+        await addDoc(collection(db, "partidas"), {
+            jogador1: primeiro.nome,
+            jogador2: vencedor,
+            status: "pendente",
+            fase: "final",
+            ordem: 1000
+        });
+    
+        await updateDoc(doc(db, "config", "estado"), {
+            fase: "final"
+        });
+    
+        return;
+    }
+    
+    if (!pendente && desempates.length === 0) {
         gerarFinal();
     }
 }
